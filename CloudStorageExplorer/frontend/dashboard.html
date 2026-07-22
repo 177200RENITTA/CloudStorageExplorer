@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Nimbus</title>
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="none" style="color: var(--accent); width: 24px; height: 24px; display: inline-block; vertical-align: middle;">
+        <path d="M7 18a4.5 4.5 0 0 1-.4-8.98A5.5 5.5 0 0 1 17.2 8.1 4 4 0 0 1 17 18H7Z" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M12 10.5v6M9.2 13.3 12 10.5l2.8 2.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Nimbus
+    </div>
+    <div class="nav-links">
+      <a class="nav-link active" href="dashboard.html">Dashboard</a>
+      <a class="nav-link" href="files.html">Files</a>
+      <a class="nav-link" href="upload.html">Upload</a>
+      <a class="nav-link" href="#" id="logout-btn">Log out</a>
+    </div>
+  </nav>
+
+  <main class="page">
+    <h1 id="sidebar-user-name">Welcome back</h1>
+    <p id="sidebar-user-email" style="margin-bottom: 32px; color: var(--text-muted);"></p>
+
+    <!-- Storage Gauge Section (Updated IDs to match script.js rendering module) -->
+    <div class="card" style="margin-bottom: 24px;">
+      <div id="storage-gauge" class="storage-meter">
+        <div id="storage-gauge-track" class="storage-meter-track" style="display: flex; height: 12px; background: var(--bg-alt); border-radius: 6px; overflow: hidden;">
+          <!-- script.js dynamically appends storage-gauge__segment tags here -->
+        </div>
+        <div class="storage-meter-labels" style="margin-top: 8px; display: flex; justify-content: space-between;">
+          <span id="storage-gauge-readout">0 B used</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Stats Metric Counters -->
+    <div class="grid grid-3" style="margin-bottom: 32px;">
+      <div class="card stat-card">
+        <div class="stat-label">Total files</div>
+        <div class="stat-value" id="stat-total-files">—</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-label">Storage used</div>
+        <div class="stat-value" id="stat-total-storage">—</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-label">Profile Status</div>
+        <div class="stat-value" id="sidebar-avatar" style="text-transform: uppercase; font-weight: bold; color: var(--accent);">—</div>
+      </div>
+    </div>
+
+    <h2 style="font-size: 1.1rem; margin-bottom: 16px;">Recent uploads</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>Size</th>
+            <th>Uploaded</th>
+          </tr>
+        </thead>
+        <!-- Updated list container ID to match script.js layout templates -->
+        <ul id="recent-files-list" style="list-style: none; padding: 0; margin: 0;">
+          <li class="empty-state"><p>Loading storage telemetry...</p></li>
+        </ul>
+      </table>
+    </div>
+  </main>
+
+  <!-- Load the global app script file to handle auth enforcement and render dashboards automatically -->
+  <script src="../static/js/script.js"></script>
+</body>
+</html>

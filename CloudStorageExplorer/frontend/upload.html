@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload — Nimbus</title>
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="none" style="color: var(--accent)">
+        <path d="M7 18a4.5 4.5 0 0 1-.4-8.98A5.5 5.5 0 0 1 17.2 8.1 4 4 0 0 1 17 18H7Z" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M12 10.5v6M9.2 13.3 12 10.5l2.8 2.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Nimbus
+    </div>
+    <div class="nav-links">
+      <a class="nav-link" href="dashboard.html">Dashboard</a>
+      <a class="nav-link" href="files.html">Files</a>
+      <a class="nav-link active" href="upload.html">Upload</a>
+      <a class="nav-link" href="#" id="logout-btn">Log out</a>
+    </div>
+  </nav>
+
+  <main class="page" style="max-width: 640px;">
+    <h1>Upload a file</h1>
+    <p style="margin-bottom: 28px;">PDF, DOCX, PPT, images, ZIP, or plain text — straight into your S3 storage.</p>
+
+    <div id="alert" class="alert"></div>
+
+    <div class="card">
+      <div class="dropzone" id="dropzone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M12 4v12m0 0 4.5-4.5M12 16l-4.5-4.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M5 20h14" stroke-linecap="round"/>
+        </svg>
+        <div><strong>Click to browse</strong> or drag a file here</div>
+        <div class="hint">Max size depends on your server configuration</div>
+        <input type="file" id="file-input" style="display:none" />
+      </div>
+
+      <div id="selected-file" class="selected-file" style="display:none;">
+        <span id="selected-file-name" class="mono"></span>
+        <button class="btn btn-ghost" id="clear-file-btn" type="button">Remove</button>
+      </div>
+
+      <div id="progress-wrap" class="storage-meter" style="display:none; margin-top: 18px;">
+        <div class="storage-meter-track">
+          <div class="storage-meter-fill" id="progress-fill" style="width: 0%;"></div>
+        </div>
+        <div class="storage-meter-labels">
+          <span id="progress-label">Uploading...</span>
+          <span id="progress-pct">0%</span>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-block" id="upload-btn" style="margin-top: 20px;" disabled>
+        Upload to Nimbus
+      </button>
+    </div>
+  </main>
+
+  <script src="../static/js/script.js"></script>
+  <script>
+    requireAuth();
+
+    document.getElementById("logout-btn").addEventListener("click", (e) => {
+      e.preventDefault();
+      logout();
+    });
+
+    const alertEl = document.getElementById("alert");
+    const dropzone = document.getElementById("dropzone");
+    const fileInput = document.getElementById("file-input");
+    const selectedFileBox = document.getElementById("selected-file");
+    const selectedFileName = document.getElementById("selected-file-name");
+    const uploadBtn = document.getElementById("upload-btn");
+    const progressWrap = document.getElementById("progress-wrap");
+    const progressFill = document.getElementById("progress-fill");
+    const progressPct = document.getElementById("progress-pct");
+    const progressLabel = document.getElementById("progress-label");
+
+    let selectedFile = null;
+
+    dropzone.addEventListener("click", () => fileInput.click());
+
+    dropzone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropzone.classList.add("dragover");
+    });
+
+    dropzone.addEventListener("dragleave", () => dropzone.classList.remove("dragover"));
+
+    dropzone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropzone.classList.remove("dragover");
+      if (e.dataTransfer.files.length) {
+        setSelectedFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput.addEventListener("change", () => {
+      if (fileInput.files.length) {
+        setSelectedFile(fileInput.files[0]);
+      }
+    });
+
+    document.getElementById("clear-file-btn").addEventListener("click", () => {
+      selectedFile = null;
+      fileInput.value = "";
+      selectedFileBox.style.display = "none";
+      uploadBtn.disabled = true;
+    });
+
+    function setSelectedFile(file) {
+      selectedFile = file;
+      selectedFileName.textContent = `${file.name} · ${formatBytes(file.size)}`;
+      selectedFileBox.style.display = "flex";
+      uploadBtn.disabled = false;
+      hideAlert(alertEl);
+    }
+
+    uploadBtn.addEventListener("click", () => {
+      if (!selectedFile) return;
+      hideAlert(alertEl);
+      uploadBtn.disabled = true;
+      progressWrap.style.display = "block";
+
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", `${API_BASE_URL}/files/upload`);
+      xhr.setRequestHeader("Authorization", `Bearer ${getToken()}`);
+
+      xhr.upload.addEventListener("progress", (e) => {
+        if (e.lengthComputable) {
+          const pct = Math.round((e.loaded / e.total) * 100);
+          progressFill.style.width = `${pct}%`;
+          progressPct.textContent = `${pct}%`;
+        }
+      });
+
+      xhr.addEventListener("load", () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          progressLabel.textContent = "Upload complete";
+          showAlert(alertEl, "File uploaded successfully.", "success");
+          setTimeout(() => { window.location.href = "files.html"; }, 900);
+        } else {
+          let message = "Upload failed. Please try again.";
+          try { message = JSON.parse(xhr.responseText).detail || message; } catch {}
+          showAlert(alertEl, message, "error");
+          uploadBtn.disabled = false;
+          progressWrap.style.display = "none";
+        }
+      });
+
+      xhr.addEventListener("error", () => {
+        showAlert(alertEl, "Could not reach the server. Is the backend running?", "error");
+        uploadBtn.disabled = false;
+        progressWrap.style.display = "none";
+      });
+
+      xhr.send(formData);
+    });
+  </script>
+</body>
+</html>

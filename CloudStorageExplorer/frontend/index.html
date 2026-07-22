@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nimbus — Cloud Storage Explorer</title>
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="../static/css/style.css" />
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="none" style="color: var(--accent)">
+        <path d="M7 18a4.5 4.5 0 0 1-.4-8.98A5.5 5.5 0 0 1 17.2 8.1 4 4 0 0 1 17 18H7Z" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M12 10.5v6M9.2 13.3 12 10.5l2.8 2.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Nimbus
+    </div>
+    <div class="nav-links">
+      <a class="nav-link" href="login.html">Log in</a>
+      <a class="nav-link active" href="register.html">Create account</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <svg class="hero-cloud" viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M34 74a22 22 0 0 1-2-43.9A27 27 0 0 1 84.5 22 20 20 0 0 1 83 74H34Z"
+            stroke="var(--accent)" stroke-width="2.2"/>
+      <path d="M60 40v28M47 55l13-13 13 13" stroke="var(--accent-2)" stroke-width="2.6"
+            stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <h1>Your files, always within reach.</h1>
+    <p class="lede">
+      Nimbus is a secure, no-friction place to upload, organize, and find your files —
+      backed by Amazon S3 and built for people who don't want to think about cloud storage.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="register.html">Create a free account</a>
+      <a class="btn btn-ghost" href="login.html">Log in</a>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="feature">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 4v12m0 0 4.5-4.5M12 16l-4.5-4.5M5 20h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <h3>Upload anything</h3>
+      <p>PDFs, docs, images, zips — drop a file in and it's safely stored in S3.</p>
+    </div>
+    <div class="feature">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-3.8-3.8" stroke-linecap="round"/></svg>
+      <h3>Find it fast</h3>
+      <p>Search by filename across every file you've ever uploaded.</p>
+    </div>
+    <div class="feature">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 5 6.5v5c0 4.6 3 8 7 9 4-1 7-4.4 7-9v-5L12 3Z" stroke-linejoin="round"/></svg>
+      <h3>Private by default</h3>
+      <p>Every account is isolated, every download link is time-limited.</p>
+    </div>
+    <div class="feature">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h4l2-7 4 14 2-7h6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <h3>Track your usage</h3>
+      <p>A running dashboard of storage used and what you've uploaded recently.</p>
+    </div>
+  </section>
+  <script src="../static/js/script.js"></script>
+
+</body>
+</html>
